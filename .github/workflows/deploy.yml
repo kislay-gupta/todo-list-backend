@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [22.x]
+        node-version: [22.x] # Updated to match server's Node.js version
 
     steps:
       - uses: actions/checkout@v3
@@ -22,19 +22,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          cache: "npm"
 
       - name: Install Dependencies
-        run: |
-          if [ -f "package-lock.json" ]; then
-            npm ci
-          else
-            npm install
-            git config --global user.email "github-actions@github.com"
-            git config --global user.name "GitHub Actions"
-            git add package-lock.json
-            git commit -m "Add package-lock.json"
-            git push
-          fi
+        run: npm ci # Removed redundant npm install
 
       - name: Deploy to Hostinger
         uses: appleboy/ssh-action@v1.0.0
