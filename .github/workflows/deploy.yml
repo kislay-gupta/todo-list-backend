@@ -11,18 +11,21 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [22.x] # Updated to match server's Node.js version
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          cache: "npm"
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm ci # Removed redundant npm install
 
       - name: Deploy to Hostinger
         uses: appleboy/ssh-action@v1.0.0
@@ -32,6 +35,8 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd /home/sparkovationhub-todo/htdocs/todo.sparkovationhub.com
-            git pull origin main
-            npm install
-            pm2 restart index.js
+            git config --global --add safe.directory /home/sparkovationhub-todo/htdocs/todo.sparkovationhub.com
+            git fetch --all
+            git reset --hard origin/main
+            npm ci --production
+            pm2 restart index.js || pm2 start index.js
