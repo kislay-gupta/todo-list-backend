@@ -32,7 +32,7 @@ const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.get("/", (req, res) => {
-  res.send("Hello, World!");
+  res.send("Hello, Friend!");
 });
 
 app.use(express.json());
