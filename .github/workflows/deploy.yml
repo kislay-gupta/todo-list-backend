@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: HOSTINGER_HOST # Add environment specification
+    environment: HOSTINGER_HOST
 
     strategy:
       matrix:
@@ -31,12 +31,24 @@ jobs:
       - name: Deploy to Hostinger
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.HOSTINGER_HOST }} # Using environment secret
+          host: ${{ secrets.HOSTINGER_HOST }}
           username: "sparkovationhub-todo"
-          password: ${{ secrets.SSH_PASSWORD }} # Using environment secret
-          port: 22 # Added explicit port
-          debug: true # Added debug mode to help troubleshoot
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          debug: true
           script: |
+            # Install Node.js and npm if not present
+            if ! command -v node &> /dev/null; then
+              curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+              sudo apt-get install -y nodejs
+            fi
+
+            # Install PM2 globally if not present
+            if ! command -v pm2 &> /dev/null; then
+              sudo npm install -g pm2
+            fi
+
+            # Deploy application
             cd /home/sparkovationhub-todo/htdocs/todo.sparkovationhub.com
             git config --global --add safe.directory /home/sparkovationhub-todo/htdocs/todo.sparkovationhub.com
             git fetch --all
