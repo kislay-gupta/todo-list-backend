@@ -9,6 +9,7 @@ app.use(
     credentials: true,
   })
 );
+app.use(express.json({ limit: "16kb" }));
 
 const swaggerOptions = {
   definition: {
@@ -35,7 +36,6 @@ app.get("/", (req, res) => {
   res.send("Hello, Friend!");
 });
 
-app.use(express.json());
 import todoRoutes from "./routes/todo.routes.js";
 app.use("/api/todos", todoRoutes);
 
