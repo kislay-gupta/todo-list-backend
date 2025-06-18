@@ -33,7 +33,7 @@ const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.get("/", (req, res) => {
-  res.send("Hello, Friend!");
+  res.send("Hello, world!");
 });
 
 import todoRoutes from "./routes/todo.routes.js";
